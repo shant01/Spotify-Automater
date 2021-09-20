@@ -1,7 +1,7 @@
 import os
 from google.auth.transport import Request
-import google_auth_oauthlib
-import googleapiclient
+import google_auth_oauthlib.flow
+import googleapiclient.discovery
 import youtube_dl
 
 class Playlist(object):
