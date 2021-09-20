@@ -4,6 +4,11 @@ import google_auth_oauthlib
 import googleapiclient
 import youtube_dl
 
+class Playlist(object):
+    def __init__(self, id, title):
+        self.id = id
+        self.title = title
+
 class Song(object): 
     def __init__(self, artist, track): 
         self.artist = artist
@@ -22,7 +27,7 @@ class YoutubeClient(object):
             credentials_location, scopes
         )
         credentials = flow.run_console()
-        youtube = googleapiclient.discovery.build(
+        youtube_client = googleapiclient.discovery.build(
             api_service_name, api_version, credentials=credentials
         )
 
@@ -37,7 +42,7 @@ class YoutubeClient(object):
         )
         response= request.execute()
 
-        playlists = [playlist for playlist in response['items']]
+        playlists = [Playlist(item['id'], item['snippet']['title']) for item in response['items']]
         return playlists
 
     def get_videos_from_playlist(self,playlist_id): 
@@ -63,4 +68,9 @@ class YoutubeClient(object):
         video = youtube_dl.YoutubeDL({'quiet': True}).extract_info(
             youtube_url, download = False
         )
+
+        artist = video['artist']
+        track = video['track']
+
+        return artist, track
 
